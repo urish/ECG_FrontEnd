@@ -1,0 +1,64 @@
+** sch_path: /home/ttuser/tt10-OTA_FC/xschem/ecg.sch
+.subckt ecg INp OUT Vref INm VDD VSS ref OUTDRL
+*.PININFO INp:I INm:I OUT:O Vref:I OUTDRL:O ref:I VDD:B VSS:B
+XR3 Vcm net5 VSS sky130_fd_pr__res_high_po_0p35 L=0.6 mult=1 m=1
+XR15 Vcm net6 VSS sky130_fd_pr__res_high_po_0p35 L=0.6 mult=1 m=1
+XR18 net5 net11 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR20 net10 net9 VSS sky130_fd_pr__res_high_po_5p73 L=2.7 mult=1 m=1
+XR17 net12 net1 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR1 net11 net12 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR2 net6 net13 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR21 net14 net2 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR24 net13 net14 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR4 net7 net4 VSS sky130_fd_pr__res_xhigh_po_0p35 L=1.8 mult=1 m=1
+XR7 net8 net3 VSS sky130_fd_pr__res_xhigh_po_0p35 L=1.8 mult=1 m=1
+XR11 net4 net15 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR19 net16 net17 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR25 net15 net16 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR26 net17 OUT VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR12 net3 net18 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR27 net19 net20 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR28 net18 net19 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR29 net20 Vref VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XC2 net9 OUTDRL sky130_fd_pr__cap_mim_m3_1 W=30 L=30 m=6
+XR16 net9 net21 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR30 net22 net23 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR32 net21 net22 VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+XR34 net23 OUTDRL VSS sky130_fd_pr__res_xhigh_po_0p35 L=11 mult=1 m=1
+x16 Vb VDD VSS Vc2 net1 INp net5 Vc1 Vc OFCB
+x1 Vb VDD VSS Vc2 net2 INm net6 Vc1 Vc OFCB
+x2 Vb VDD VSS Vc2 net7 net1 net7 Vc1 Vc OFCB
+x3 Vb VDD VSS Vc2 net8 net2 net8 Vc1 Vc OFCB
+x4 Vb VDD VSS Vc2 OUT net3 net4 Vc1 Vc OFCB
+x5 Vb VDD VSS Vc2 net10 Vcm net10 Vc1 Vc OFCB
+x6 Vb VDD VSS Vc2 OUTDRL ref net9 Vc1 Vc OFCB
+XR35 Vb VDD VSS sky130_fd_pr__res_xhigh_po_0p35 L=5 mult=1 m=1
+XR36 VSS Vb VSS sky130_fd_pr__res_xhigh_po_0p35 L=13.2 mult=1 m=1
+XR37 Vc VDD VSS sky130_fd_pr__res_xhigh_po_0p35 L=5 mult=1 m=1
+XR38 VSS Vc VSS sky130_fd_pr__res_xhigh_po_0p35 L=3.07 mult=1 m=1
+XR39 Vc1 VDD VSS sky130_fd_pr__res_xhigh_po_0p35 L=5 mult=1 m=1
+XR40 VSS Vc1 VSS sky130_fd_pr__res_xhigh_po_0p35 L=13.2 mult=1 m=1
+XR41 Vc2 VDD VSS sky130_fd_pr__res_xhigh_po_0p35 L=5 mult=1 m=1
+XR42 VSS Vc2 VSS sky130_fd_pr__res_xhigh_po_0p35 L=1.6 mult=1 m=1
+.ends
+
+* expanding   symbol:  OFCB.sym # of pins=9
+** sym_path: /home/ttuser/tt10-OTA_FC/xschem/OFCB.sym
+** sch_path: /home/ttuser/tt10-OTA_FC/xschem/OFCB.sch
+.subckt OFCB Vb VDD GND Vc2 OUT INp INm Vc1 Vc
+*.PININFO VDD:B GND:B OUT:O INp:I INm:I Vc2:B Vc1:B Vc:B Vb:B
+XM11 S Vb VDD VDD sky130_fd_pr__pfet_01v8_lvt L=1 W=60 nf=6 m=2
+XM1 D1 INp S S sky130_fd_pr__pfet_01v8_lvt L=10 W=25 nf=2 m=2
+XM2 D2 INm S S sky130_fd_pr__pfet_01v8_lvt L=10 W=25 nf=2 m=2
+XM3 OUT Vc1 D2 GND sky130_fd_pr__nfet_01v8_lvt L=1 W=4 nf=1 m=1
+XM4 D2 Vc GND GND sky130_fd_pr__nfet_01v8_lvt L=1 W=2.8 nf=1 m=1
+XM5 D1 Vc GND GND sky130_fd_pr__nfet_01v8_lvt L=1 W=2.8 nf=1 m=1
+XM6 G Vc1 D1 GND sky130_fd_pr__nfet_01v8_lvt L=1 W=4 nf=1 m=1
+XM7 G Vc2 D9 D9 sky130_fd_pr__pfet_01v8_lvt L=2.23 W=4 nf=1 m=1
+XM9 D9 G VDD VDD sky130_fd_pr__pfet_01v8_lvt L=2.23 W=3.85 nf=1 m=1
+XM8 D10 G VDD VDD sky130_fd_pr__pfet_01v8_lvt L=2.23 W=3.85 nf=1 m=1
+XM10 OUT Vc2 D10 D10 sky130_fd_pr__pfet_01v8_lvt L=2.23 W=4 nf=1 m=1
+XC1 OUT D1 sky130_fd_pr__cap_mim_m3_1 W=22.4 L=22.4 m=2
+.ends
+
+.end

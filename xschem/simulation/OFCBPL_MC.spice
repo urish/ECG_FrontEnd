@@ -1,0 +1,123 @@
+** sch_path: /home/ttuser/tt10-OTA_FC/xschem/OFCBPL_MC.sch
+**.subckt OFCBPL_MC VDD GND
+*.iopin VDD
+*.iopin GND
+x1 Vb VDD GND Vc2 OUT IN+ IN- Vc1 Vc OFCB
+x2 Vb VDD GND Vc2 OUTPL IN+ IN- Vc1 Vc OFCB_parax
+VbiasR1 IN+ ref 0 ac 1 0 sin(0 100u 50 0 0 0)
+V2 ref GND 0.9
+V3 VDD GND 1.8
+XR2 Vb VDD GND sky130_fd_pr__res_xhigh_po_0p35 L=5 mult=1 m=1
+XR3 GND Vb GND sky130_fd_pr__res_xhigh_po_0p35 L=13.2 mult=1 m=1
+XR4 Vc VDD GND sky130_fd_pr__res_xhigh_po_0p35 L=5 mult=1 m=1
+XR5 GND Vc GND sky130_fd_pr__res_xhigh_po_0p35 L=3.07 mult=1 m=1
+XR6 Vc1 VDD GND sky130_fd_pr__res_xhigh_po_0p35 L=5 mult=1 m=1
+XR7 GND Vc1 GND sky130_fd_pr__res_xhigh_po_0p35 L=13.2 mult=1 m=1
+XR8 Vc2 VDD GND sky130_fd_pr__res_xhigh_po_0p35 L=5 mult=1 m=1
+XR9 GND Vc2 GND sky130_fd_pr__res_xhigh_po_0p35 L=1.4 mult=1 m=1
+VbiasR2 IN- net1 0 ac 1 180 sin(0 100u 50 0 0 180)
+V1 net1 GND 0.9
+**** begin user architecture code
+
+
+
+.control
+    set wr_vecnames
+    set wr_singlescale
+
+    * 1. Pulizia iniziale del file per evitare di appendere a vecchie simulazioni
+    shell rm -f mcAC_out.txt
+
+    * Impostazioni per il salvataggio pulito
+    set appendwrite
+
+    let mc_runs = 200
+    let run = 1
+
+    dowhile run <= mc_runs
+        * 2. FORZA IL CAMBIO DEL PARAMETRO CASUALE
+        * Impostiamo il seed basandoci sul numero del run.
+        * Questo garantisce che 'reset' peschi valori diversi ogni volta.
+        set seed = $&run
+
+        * 3. RESETTA LA RETE
+        * Ricarica i parametri gauss() o unif() definiti nei modelli/istanze
+        reset
+
+        * 4. ESECUZIONE SIMULAZIONE AC
+        * L'offset di 0.9V deve essere già presente nel tuo generatore V_in (DC 0.9)
+        ac dec 10 1 1e9
+
+        * 5. SALVATAGGIO DATI
+        * Calcoliamo il vettore e lo scriviamo. 'appendwrite' lo mette in coda.
+        let gain_db = db(v(OUTPL))
+        wrdata mcAC_out.txt gain_db
+
+        * 6. PULIZIA E AVANZAMENTO
+        * Distrugge il plot attuale per non saturare la RAM
+        destroy all
+
+        * Feedback a video (non scrive su file, serve a te per monitorare)
+        echo
+
+        let run = run + 1
+    end
+.endc
+
+
+
+
+.param mc_mm_switch=1
+.param mc_pr_switch=0
+.include /home/ttuser/pdk/sky130A/libs.tech/ngspice/corners/tt.spice
+.include /home/ttuser/pdk/sky130A/libs.tech/ngspice/r+c/res_typical__cap_typical.spice
+.include /home/ttuser/pdk/sky130A/libs.tech/ngspice/r+c/res_typical__cap_typical__lin.spice
+.include /home/ttuser/pdk/sky130A/libs.tech/ngspice/corners/tt/specialized_cells.spice
+
+**** end user architecture code
+**.ends
+
+* expanding   symbol:  OFCB.sym # of pins=9
+** sym_path: /home/ttuser/tt10-OTA_FC/xschem/OFCB.sym
+** sch_path: /home/ttuser/tt10-OTA_FC/xschem/OFCB.sch
+.subckt OFCB Vb VDD GND Vc2 OUT INp INm Vc1 Vc
+*.iopin VDD
+*.iopin GND
+*.opin OUT
+*.ipin INp
+*.ipin INm
+*.iopin Vc2
+*.iopin Vc1
+*.iopin Vc
+*.iopin Vb
+XM11 S Vb VDD VDD sky130_fd_pr__pfet_01v8_lvt L=1 W=60 nf=6 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2)
++ * (W/nf + 0.29)' ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=2 m=2
+XM1 D1 INp S S sky130_fd_pr__pfet_01v8_lvt L=10 W=25 nf=2 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2)
++ * (W/nf + 0.29)' ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=2 m=2
+XM2 D2 INm S S sky130_fd_pr__pfet_01v8_lvt L=10 W=25 nf=2 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2)
++ * (W/nf + 0.29)' ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=2 m=2
+XM3 OUT Vc1 D2 GND sky130_fd_pr__nfet_01v8_lvt L=1 W=4 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2)
++ * (W/nf + 0.29)' ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XM4 D2 Vc GND GND sky130_fd_pr__nfet_01v8_lvt L=1 W=2.8 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2)
++ * (W/nf + 0.29)' ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XM5 D1 Vc GND GND sky130_fd_pr__nfet_01v8_lvt L=1 W=2.8 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2)
++ * (W/nf + 0.29)' ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XM6 G Vc1 D1 GND sky130_fd_pr__nfet_01v8_lvt L=1 W=4 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2)
++ * (W/nf + 0.29)' ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XM7 G Vc2 D9 D9 sky130_fd_pr__pfet_01v8_lvt L=2.23 W=4 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2)
++ * (W/nf + 0.29)' ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XM9 D9 G VDD VDD sky130_fd_pr__pfet_01v8_lvt L=2.23 W=3.85 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2)
++ * (W/nf + 0.29)' ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XM8 D10 G VDD VDD sky130_fd_pr__pfet_01v8_lvt L=2.23 W=3.85 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2)
++ * (W/nf + 0.29)' ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XM10 OUT Vc2 D10 D10 sky130_fd_pr__pfet_01v8_lvt L=2.23 W=4 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2)
++ * (W/nf + 0.29)' ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XC1 OUT D1 sky130_fd_pr__cap_mim_m3_1 W=22.4 L=22.4 MF=2 m=2
+.ends
+
+
+* expanding   symbol:  OFCB_parax.sym # of pins=9
+** sym_path: /home/ttuser/tt10-OTA_FC/xschem/OFCB.sym
+.include /home/ttuser/tt10-OTA_FC/mag/OFCB.sim.spice
+.GLOBAL GND
+.end
