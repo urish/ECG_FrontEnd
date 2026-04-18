@@ -9,12 +9,11 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-This project implements a single ended OTA (Operational Transconductance Amplifier) using a folded cascode architecture
+This project implements an ecg front end (front end for measure of electrocardiogram) using a folded cascode based architecture
 
 ## How to test
 
-To test the OTA, connect a differential input signal to the INp and INm analog pins (ua[2] and ua[1] respectively). Connect VDD to 1.8V and VSS to ground. Observe the differential output voltage at the OUT pin (ua[0]) using an oscilloscope or measurement instrument.
-
+To test the ecg front-end, connect the input signal from the elctrode (ecg singal) to the INp and INm analog pins (ua[5] and ua[4] respectively). Ensure ref (ua[1]) and Vref (ua[2]) are properly biased at 0.9V or at the output of a offset compensation circuit. Observe the output signal at the OUT pin (ua[3]) connecting  OUTDRL (ua[0]) a the right leg of the body using another electrode. 
 ## External hardware
 
 Oscilloscope
