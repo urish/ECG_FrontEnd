@@ -26,7 +26,8 @@ jobs:
           gds_path: gds/${{ steps.top_module.outputs.TOP_MODULE }}.gds
           lef_path: lef/${{ steps.top_module.outputs.TOP_MODULE }}.lef
           verilog_path: src/project.v
-  
+          pdk: sky130A
+
   precheck:
     needs: gds
     runs-on: ubuntu-24.04
